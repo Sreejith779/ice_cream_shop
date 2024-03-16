@@ -7,7 +7,7 @@ import 'package:ice_cream_shop/model/popular_item.dart';
 
 class ProductTile extends StatefulWidget {
   const ProductTile({super.key, required this.productModel});
-  final List<ProductModel>productModel;
+final ProductModel productModel;
 
   @override
   State<ProductTile> createState() => _ProductTileState();
@@ -25,12 +25,12 @@ class _ProductTileState extends State<ProductTile> {
             return Container(
               margin: const EdgeInsets.symmetric(horizontal: 10),
 
-             
+
               decoration: BoxDecoration(
                 color: Colors.white70,
                 borderRadius: BorderRadius.circular(25),
                   image: DecorationImage(
-                      image: NetworkImage(widget.productModel[index].imageUrl.toString()))
+                      image: NetworkImage(widget.productModel.image.toString()))
 
               ),
             );

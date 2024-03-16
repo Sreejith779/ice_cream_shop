@@ -1,10 +1,10 @@
 class ProductModel{
 
-final String flavour;
+final String flavor;
 final String description;
-final int price;
-final String imageUrl;
+final double price;
+final String image;
 
-  ProductModel({required this.flavour, required this.description, required this.price, required this.imageUrl});
+  ProductModel({required this.flavor, required this.description, required this.price, required this.image});
 
 }
