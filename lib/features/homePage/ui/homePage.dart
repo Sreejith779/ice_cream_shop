@@ -1,9 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ice_cream_shop/features/cartPage/ui/cartPage.dart';
 import 'package:ice_cream_shop/features/homePage/ui/popular_itemTile.dart';
 import 'package:ice_cream_shop/features/homePage/ui/popular_items.dart';
-import 'package:ice_cream_shop/model/popular_item.dart';
+import 'package:ice_cream_shop/features/productPage/ui/productPage.dart';
+import 'package:ice_cream_shop/features/wishListPage/ui/wishList.dart';
 
 import '../bloc/home_bloc.dart';
 import '../productModel/model.dart';
@@ -31,7 +33,22 @@ class _HomePageState extends State<HomePage> {
       listenWhen: (previous, current) => (current is HomeActionState),
       buildWhen: (previous, current) => (current is! HomeActionState),
       listener: (context, state) {
-        // TODO: implement listener
+        if (state is WishListNavigateState) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => const WishListPage()));
+        } else if (state is CartNavigateState) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => const CartPage()));
+        } else if (state is WishListClickedState) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("Item wishlisted")));
+        } else if (state is CartClickedState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Carted Successfully")));
+        }else if(state is ProductNavigateState){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>
+          const ProductPage()));
+        }
       },
       builder: (context, state) {
         switch (state.runtimeType) {
@@ -55,19 +72,18 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.grey.withOpacity(0.6),
                     )),
                 actions: [
-
                   Container(
-                    margin: EdgeInsets.only(right: 20),
+                    margin: const EdgeInsets.only(right: 20),
                     child: Row(
                       children: [
-
                         Container(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color: Colors.white70
-                          ),
+                              color: Colors.white70),
                           child: IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                homeBloc.add(WishListButtonNavigateEvent());
+                              },
                               icon: Icon(
                                 Icons.favorite_outline,
                                 size: 25,
@@ -80,23 +96,23 @@ class _HomePageState extends State<HomePage> {
                         Container(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color: Colors.white70
-                          ),
+                              color: Colors.white70),
                           child: IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                homeBloc.add(CartButtonNavigateEvent());
+                                // Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                                // CartPage()));
+                              },
                               icon: Icon(
                                 Icons.shopping_cart,
                                 size: 25,
                                 color: Colors.grey.withOpacity(0.6),
                               )),
                         )
-
                       ],
                     ),
                   )
-
                 ],
-
               ),
               body: Container(
                 margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
@@ -120,17 +136,18 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const Text(
                           "Popular IceCreams",
-                          style:
-                              TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(
                           height: 10,
                         ),
                         Container(
                             child: CarouselSlider.builder(
-                                itemCount: loadedState.products.length??0,
+                                itemCount: loadedState.products.length ?? 0,
                                 itemBuilder: (context, index, realIndex) {
-                                  return carouselCard(loadedState.products[index]);
+                                  return carouselCard(
+                                      loadedState.products[index]);
                                 },
                                 options: CarouselOptions(
                                   height: 300,
@@ -141,108 +158,135 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const Text(
                           "Recommended",
-                          style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500,
-                          color: Colors.grey),
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey),
                         ),
                         const SizedBox(
                           height: 10,
                         ),
-                        Container(
-                          height: 500,
-                          child: ListView.builder(
-                              itemCount: loadedState.products1.length??0,
-                              itemBuilder: (context,index){
-                                return Container(
-                                  margin: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(15)
-                            ),
-
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: NetworkImage(loadedState.products1[index].image.toString()),
-                                          fit: BoxFit.cover),
-                                          borderRadius: BorderRadius.circular(20)
-                                        ),
-                                        height: 120,
-                                        width: 100,
-                                        margin: const EdgeInsets.all(10)
-                                      ),
-                                      Container(
-                                        padding: EdgeInsets.only(bottom: 10,left: 10),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(loadedState.products1[index].flavor,
-                                              style: const TextStyle(
-                                                fontSize: 18,fontWeight: FontWeight.w600
-                                              ),),
-                                            Text(
-                                             " Rs ${
-                                                loadedState
-                                                    .products1[index].price
-                                                    .toString()
-                                              }",
-                                              style:  TextStyle(
-                                                fontSize: 18,fontWeight: FontWeight.w600,
-                                                color: Colors.black.withOpacity(0.8)
-                                              ),),
-                                            const SizedBox(
-                                              height: 10,
+                        InkWell(
+                          child: Container(
+                            height: 500,
+                            child: ListView.builder(
+                                itemCount: loadedState.products1.length ?? 0,
+                                itemBuilder: (context, index) {
+                                  return InkWell(onTap: (){
+                                    homeBloc.add(ProductNavigateEvent(productDataList: loadedState.products1[index]));
+                                  },
+                                    child: Container(
+                                      margin: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey.withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(15)),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          loadedState
+                                                              .products1[index]
+                                                              .image
+                                                              .toString()),
+                                                      fit: BoxFit.cover),
+                                                  borderRadius:
+                                                      BorderRadius.circular(20)),
+                                              height: 120,
+                                              width: 100,
+                                              margin: const EdgeInsets.all(10)),
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                bottom: 10, left: 10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  loadedState
+                                                      .products1[index].flavor,
+                                                  style: const TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight: FontWeight.w600),
+                                                ),
+                                                Text(
+                                                  " Rs ${loadedState.products1[index].price.toString()}",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: Colors.black
+                                                          .withOpacity(0.8)),
+                                                ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Container(
+                                                  margin: const EdgeInsets.only(
+                                                      right: 20),
+                                                  child: Row(
+                                                    children: [
+                                                      Container(
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(12),
+                                                            color: Colors.white70),
+                                                        height: 40,
+                                                        child: IconButton(
+                                                            onPressed: () {
+                                                              homeBloc.add(WishListButtonClickedEvent(
+                                                                  clickedProduct:
+                                                                      loadedState
+                                                                              .products1[
+                                                                          index]));
+                                                            },
+                                                            icon: Icon(
+                                                              Icons
+                                                                  .favorite_outline,
+                                                              size: 25,
+                                                              color: Colors.grey
+                                                                  .withOpacity(0.6),
+                                                            )),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Container(
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(12),
+                                                            color: Colors.white70),
+                                                        height: 40,
+                                                        child: IconButton(
+                                                            onPressed: () {
+                                                              homeBloc.add(CartButtonClickedEvent(
+                                                                  clickedProduct:
+                                                                      loadedState
+                                                                              .products1[
+                                                                          index]));
+                                                            },
+                                                            icon: Icon(
+                                                              Icons.shopping_cart,
+                                                              size: 25,
+                                                              color: Colors.grey
+                                                                  .withOpacity(0.6),
+                                                            )),
+                                                      )
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
                                             ),
-                                            Container(
-                                              margin: const EdgeInsets.only(right: 20),
-                                              child: Row(
-                                                children: [
-
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(12),
-                                                        color: Colors.white70
-                                                    ),
-                                                    height: 40,
-                                                    child: IconButton(
-                                                        onPressed: () {},
-                                                        icon: Icon(
-                                                          Icons.favorite_outline,
-                                                          size: 25,
-                                                          color: Colors.grey.withOpacity(0.6),
-                                                        )),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(12),
-                                                        color: Colors.white70
-                                                    ),
-                                                    height: 40,
-                                                    child: IconButton(
-                                                        onPressed: () {},
-                                                        icon: Icon(
-                                                          Icons.shopping_cart,
-                                                          size: 25,
-                                                          color: Colors.grey.withOpacity(0.6),
-                                                        )),
-                                                  )
-
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                );
-                              }),
+                                    ),
+                                  );
+                                }),
+                          ),
                         )
                       ],
                     ),
@@ -323,7 +367,9 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.white70),
                 height: 50,
                 width: 50,
-                child: Icon(Icons.shopping_cart),
+                child:  IconButton(onPressed: (){
+                  homeBloc.add(CartButtonClickedEvent(clickedProduct:product));
+                }, icon: const Icon(Icons.shopping_cart))
               ),
             ))
       ],

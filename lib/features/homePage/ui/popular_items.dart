@@ -2,7 +2,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ice_cream_shop/features/homePage/productModel/model.dart';
-import 'package:ice_cream_shop/model/popular_item.dart';
+
+import '../../../modelData/popular_item.dart';
+
 
 
 class ProductTile extends StatefulWidget {
