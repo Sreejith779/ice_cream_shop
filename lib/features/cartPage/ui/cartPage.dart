@@ -31,7 +31,7 @@ class _CartPageState extends State<CartPage> {
           case CartLoadedState:
             final loadedState = state as CartLoadedState;
             return Scaffold(
-              backgroundColor: const Color(0xFFF1EFFF),
+              backgroundColor:  Colors.white,
 appBar: AppBar(
   title: Text("Cart"),
 ),
@@ -47,7 +47,9 @@ body: Container(
   child: Column(
     children: [
       Expanded(
-        child: ListView.builder(
+        child: 
+        state.cartItem.isNotEmpty?
+        ListView.builder(
             itemCount:loadedState.cartItem.length,
             itemBuilder: (context,index){
               return Container(
@@ -107,9 +109,18 @@ body: Container(
                 ),
               );
         
-            }),
+            }):
+        Center(
+          child: Container(
+            height: 400,
+            decoration: const BoxDecoration(
+              image: DecorationImage(image: AssetImage("assets/cartList.jpg"),
+              opacity: 0.8)
+            ),
+          ),
+        ),
       ),
-      Container(
+      if(state.cartItem.isNotEmpty) Container(
         height: 70,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),

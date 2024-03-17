@@ -4,3 +4,9 @@ part of 'product_bloc.dart';
 abstract class ProductEvent {}
 class ProductInitialEvent extends ProductEvent{}
 
+class ProductBuyEvent extends ProductEvent{
+  final ProductModel productModel;
+
+  ProductBuyEvent({required this.productModel});
+}
+

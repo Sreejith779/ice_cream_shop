@@ -41,82 +41,96 @@ wishListBloc.add(WishListInitialEvent());
               appBar: AppBar(
                 title: const Text("WishList"),
               ),
-              backgroundColor: const Color(0xFFF1EFFF),
-              body:ListView.builder(
-                    itemCount: loadedState.wishList.length,
-                    itemBuilder: (context,index){
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(15)
-                        ),
-                        margin: EdgeInsets.all(10),
-                        child: Row(
-                          children: [
-                            Container(
-                             height: 100,
-                              width: 90,
+              backgroundColor: Colors.white,
+              body:Column(
+                children: [
+                        Expanded(
+                          child: state.wishList.isNotEmpty?
+                          ListView.builder(
+                          itemCount: loadedState.wishList.length,
+                          itemBuilder: (context,index){
+                            return Container(
                               decoration: BoxDecoration(
-
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(image: NetworkImage(loadedState.wishList[index].image.toString()),
-                                fit: BoxFit.cover)
+                                color: Colors.grey.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(15)
                               ),
-                            ),
-                            Container(
-                             margin: EdgeInsets.only(left: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              margin: EdgeInsets.all(10),
+                              child: Row(
                                 children: [
-                                  Text(loadedState.wishList[index].flavor,style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                  ),),
-                                  Text(loadedState.wishList[index].price.toString(),style: const TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w500,
-                                  ),),
-                               Row(
-                                 children: [
-                                   Container(
-                                     height: 25,
-                                     width: 80,
+                                  Container(
+                                   height: 100,
+                                    width: 90,
                                     decoration: BoxDecoration(
+                          
                                       borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white,
+                                      image: DecorationImage(image: NetworkImage(loadedState.wishList[index].image.toString()),
+                                      fit: BoxFit.cover)
                                     ),
-                                     child: const Center(child: Text("Buy now",style: TextStyle(
-                                       fontWeight: FontWeight.w500
-                                     ),)),
-                                   ),
-                                   const SizedBox(
-                                     width: 10,
-                                   ),
-                                   InkWell(
-                                     onTap: (){
-                                       wishListBloc.add(WishListRemoveEvent(deleteItem: loadedState.wishList[index]));
-                                     },
-                                     child: Container(
-                                       height: 25,
-                                       width: 80,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.orange.withOpacity(0.4),
-                                      ),
-                                       child: const Center(child: Text("Delete",style: TextStyle(
-                                         fontWeight: FontWeight.w500
-                                       ),)),
-                                     ),
-                                   )
-                                 ],
-                               )
+                                  ),
+                                  Container(
+                                   margin: EdgeInsets.only(left: 15),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(loadedState.wishList[index].flavor,style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                        ),),
+                                        Text(loadedState.wishList[index].price.toString(),style: const TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w500,
+                                        ),),
+                                     Row(
+                                       children: [
+                                         Container(
+                                           height: 25,
+                                           width: 80,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: Colors.white,
+                                          ),
+                                           child: const Center(child: Text("Buy now",style: TextStyle(
+                                             fontWeight: FontWeight.w500
+                                           ),)),
+                                         ),
+                                         const SizedBox(
+                                           width: 10,
+                                         ),
+                                         InkWell(
+                                           onTap: (){
+                                             wishListBloc.add(WishListRemoveEvent(deleteItem: loadedState.wishList[index]));
+                                           },
+                                           child: Container(
+                                             height: 25,
+                                             width: 80,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),
+                                              color: Colors.orange.withOpacity(0.4),
+                                            ),
+                                             child: const Center(child: Text("Delete",style: TextStyle(
+                                               fontWeight: FontWeight.w500
+                                             ),)),
+                                           ),
+                                         )
+                                       ],
+                                     )
+                                      ],
+                                    ),
+                                  )
                                 ],
                               ),
-                            )
-                          ],
+                            );
+                          }):
+                          Center(child: Container(
+                            height: 400,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(image: AssetImage("assets/wishList.jpg"),
+                            opacity: 0.8)
+                          ),
+                          ),),
                         ),
-                      );
-                    })
+                      ],
+              )
 
             );
             break;

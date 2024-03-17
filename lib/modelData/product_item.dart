@@ -1,13 +1,13 @@
 List<Map<String, dynamic>> iceCreams = [
   {
     'flavor': 'Vanilla',
-    'description': 'Classic creamy vanilla flavor',
+    'description': "Vanilla ice cream, a classic dessert, is creamy, sweet, and flavored with vanilla. Perfect for cones, bowls, and topping.",
     'price': 72.99,
     'image': 'https://dinnerthendessert.com/wp-content/uploads/2022/02/No-Churn-Vanilla-Ice-Cream-12-hero.jpg',
   },
   {
     'flavor': 'Chocolate',
-    'description': 'Rich and indulgent chocolate flavor',
+    'description': "Rich, creamy chocolate ice cream, a decadent delight. Indulgent, sweet, and satisfying. Perfect for cones, bowls, or irresistible sundaes.",
     'price': 103.49,
     'image': "https://img.freepik.com/premium-photo/chocolate-ice-cream-ice-cream-with-caramel-chocolate-close-up-ice-cream_234415-257.jpg?w=360",
   },

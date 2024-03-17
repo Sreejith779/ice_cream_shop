@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ice_cream_shop/features/cartPage/ui/cartPage.dart';
+import 'package:ice_cream_shop/features/homePage/bloc/home_bloc.dart';
 import 'package:ice_cream_shop/features/productPage/bloc/product_bloc.dart';
 
 class ProductPage extends StatefulWidget {
@@ -11,6 +13,7 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   final ProductBloc productBloc = ProductBloc();
+
 
   @override
   void initState() {
@@ -25,17 +28,27 @@ class _ProductPageState extends State<ProductPage> {
       listenWhen: (previous,current)=> (current is ProductActionState),
       buildWhen: (previous,current)=> (current is !ProductActionState),
       listener: (context, state) {
-        // TODO: implement listener
+      if(state is ProductNavigateActionState){
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>
+        const CartPage()));
+      }
       },
       builder: (context, state) {
       switch(state.runtimeType){
         case ProductLoadedState:
           final loadedState =  state as ProductLoadedState;
           return Scaffold(
+            appBar: AppBar(
+              backgroundColor:Colors.brown.withOpacity(0.5),
+              elevation: 0,
+              title: Text(loadedState.productItem.isNotEmpty?loadedState.productItem.first.flavor:"product name",
+              style: const TextStyle(fontWeight: FontWeight.w500),)
+            ),
             body: Container(
           child: ListView.builder(
             itemCount:loadedState.productItem.length ,
               itemBuilder: (context,index){
+
               return Stack(
                 children: [
                   Container(
@@ -61,8 +74,30 @@ class _ProductPageState extends State<ProductPage> {
                         style: const TextStyle(fontSize: 25,fontWeight: FontWeight.bold,
                         color: Colors.black),),
                         Text(loadedState.productItem[index].description,
-                        style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w500,
+                        style: const TextStyle(fontSize: 15,fontWeight: FontWeight.w500,
                         color: Colors.black),),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        InkWell(
+                          onTap: (){
+                     productBloc.add(ProductBuyEvent(productModel: loadedState.productItem[index]));
+
+                          },
+                          child: Container(
+                            height: 60,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.brown.withOpacity(0.8),
+                            ),
+                            child: const Center(child: Text("Buy now",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white70,
+                                  fontSize: 19
+                              ),)),
+                          ),
+                        )
                       ],
                     ) ,
                   )
